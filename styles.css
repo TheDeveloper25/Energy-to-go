@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Energy to Go | Carga de Carros Eléctricos a Domicilio</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Montserrat & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. VARIABLES CSS & PALETA DE ENERGÍA RENOVABLE
+           ========================================================================== */
+        :root {
+            --color-emerald: #10b981;
+            --color-emerald-dark: #059669;
+            --color-teal: #0d9488;
+            --color-mint: #34d399;
+            --color-cyan: #06b6d4;
+            --color-electric: #00f2fe;
+            --color-dark-slate: #0f172a;
+            --color-card-dark: #1e293b;
+            --color-light-bg: #f8fafc;
+            --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.35);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #334155;
+            background-color: var(--color-light-bg);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6, .brand-font {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           2. TÉCNICAS CSS: POSICIONAMIENTO Y ELEMENTOS FLOTANTES
+           ========================================================================== */
+        /* Posicionamiento Relativo y Absoluto en Hero */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 60%, #022c22 100%);
+            color: #ffffff;
+            padding: 100px 0 80px 0;
+            overflow: hidden;
+        }
+
+        .hero-badge-floating {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--color-mint);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            z-index: 10;
+        }
+
+        /* Indicador de estado animado sobrepuesto (Posicionamiento Absoluto) */
+        .pulse-dot {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 14px;
+            height: 14px;
+            background-color: var(--color-electric);
+            border-radius: 50%;
+            animation: pulse-ring 1.8s infinite;
+        }
+
+        /* TÉCNICA CSS: FLOTANTES (CSS FLOATS) EXPLÍCITOS
+           Implementación explícita de float: left / float: right y clearfix */
+        .floats-demo-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 40px;
+        }
+
+        .float-box-left {
+            float: left;
+            width: 48%;
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid var(--color-emerald);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .float-box-right {
+            float: right;
+            width: 48%;
+            background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
+            border-left: 4px solid var(--color-teal);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .float-img-thumbnail {
+            float: left;
+            width: 110px;
+            height: 110px;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        /* Clearfix CSS estándar para contenedor flotante */
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        /* ==========================================================================
+           3. TÉCNICAS CSS: FLEXBOX Y GRID
+           ========================================================================== */
+        /* Flexbox Custom Containers */
+        .flex-hero-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .flex-stat-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* CSS GRID CUSTOM LAYOUT
+           Sistema de rejilla CSS nativo con repeat y auto-fit */
+        .plans-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .grid-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px 24px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* Quick Action Tiles en CSS Grid */
+        .quick-tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        /* ==========================================================================
+           4. TRANSICIONES, ANIMACIONES Y EFECTOS
+           ========================================================================== */
+        .grid-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px rgba(16, 185, 129, 0.15);
+            border-color: var(--color-mint);
+        }
+
+        .btn-renewable {
+            background: linear-gradient(135deg, var(--color-emerald) 0%, var(--color-teal) 100%);
+            color: #ffffff;
+            border: none;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-renewable:hover {
+            background: linear-gradient(135deg, var(--color-emerald-dark) 0%, #0f766e 100%);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-outline-renewable {
+            border: 2px solid var(--color-mint);
+            color: var(--color-mint);
+            background: transparent;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-renewable:hover {
+            background: var(--color-mint);
+            color: var(--color-dark-slate);
+            transform: translateY(-2px);
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7);
+            }
+            70% {
+                transform: scale(1.15);
+                box-shadow: 0 0 0 10px rgba(6, 182, 212, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+            }
+        }
+
+        @keyframes float-animation {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .floating-truck-icon {
+            animation: float-animation 4s ease-in-out infinite;
+        }
+
+        /* ==========================================================================
+           5. COMPONENTES Y TARJETAS
+           ========================================================================== */
+        .navbar {
+            background-color: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link {
+            color: #cbd5e1 !important;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--color-mint) !important;
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--color-emerald), var(--color-cyan));
+            color: white;
+            font-weight: 800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+        }
+
+        .calculator-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+
+        .sim-screen {
+            background-color: var(--color-dark-slate);
+            color: #ffffff;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .battery-indicator {
+            height: 24px;
+            background: #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, var(--color-mint) 100%);
+            width: 20%;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .section-tag {
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-emerald-dark);
+            background: #ecfdf5;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        /* ==========================================================================
+           6. RESPONSIVE DESIGN & MEDIA QUERIES
+           ========================================================================== */
+        @media (max-width: 991.98px) {
+            .hero-section {
+                padding: 60px 0 50px 0;
+            }
+            .quick-tiles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            /* Colapsar elementos flotantes en pantallas pequeñas */
+            .float-box-left, .float-box-right {
+                float: none;
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .plans-grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-tiles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculator-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================================================
+         ENCABEZADO / NAVBAR (Sticky-top + Flexbox)
+         ========================================================================== -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                    <div class="position-relative">
+                        <i class="fa-solid fa-bolt-lightning text-warning fs-3"></i>
+                        <span class="pulse-dot"></span>
+                    </div>
+                    <span class="fs-4 brand-font text-white">Energy <span style="color: var(--color-mint);">to go</span></span>
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center gap-lg-3">
+                        <li class="nav-item"><a class="nav-link active" href="#inicio">Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#despacho">Despacho Rápido</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#como-funciona">Cómo Funciona</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#simulador">Simulador de Carga</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#planes">Planes</a></li>
+                        <li class="nav-item">
+                            <a class="btn btn-renewable btn-sm text-white px-4 mt-2 mt-lg-0" href="#simulador">
+                                <i class="fa-solid fa-truck-fast me-2"></i>Pedir Carga
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ==========================================================================
+         HERO SECTION (Posicionamiento Absoluto/Relativo + Flexbox + CSS Grid)
+         ========================================================================== -->
+    <section id="inicio" class="hero-section">
+        <!-- Floating Badge con Posicionamiento Absoluto -->
+        <div class="hero-badge-floating d-none d-md-flex align-items-center gap-2">
+            <i class="fa-solid fa-leaf text-warning"></i>
+            <span class="text-white small fw-bold">100% Energía Renovable Certificada</span>
+        </div>
+
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-6">
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success mb-3 px-3 py-2 rounded-pill fs-6">
+                        <i class="fa-solid fa-car-battery me-2"></i>Carga Móvil On-Demand
+                    </span>
+                    <h1 class="display-4 text-white mb-4">La electrinera móvil que llega <span style="color: var(--color-electric);">donde estés</span></h1>
+                    <p class="lead text-light mb-4 opacity-90">
+                        ¿Te quedaste sin batería o no quieres esperar en estaciones públicas? Solicita nuestra unidad de recarga ultra-rápida desde tu celular. Servicio 24/7 impulsado por energía 100% limpia.
+                    </p>
+
+                    <div class="flex-hero-actions mb-4">
+                        <a href="#simulador" class="btn btn-renewable btn-lg">
+                            <i class="fa-solid fa-location-dot me-2"></i>Pedir Recarga Ahora
+                        </a>
+                        <a href="#como-funciona" class="btn btn-outline-renewable btn-lg">
+                            <i class="fa-solid fa-circle-play me-2"></i>Ver Video
+                        </a>
+                    </div>
+
+                    <!-- Estadísticas Rápidas con Flexbox -->
+                    <div class="row g-3 pt-3">
+                        <div class="col-6 col-sm-4">
+                            <div class="flex-stat-card">
+                                <div>
+                                    <div class="h4 text-white mb-0 fw-bold">15 min</div>
+                                    <small class="text-light opacity-75">Llegada Promedio</small>
+                                </div>
+                                <i class="fa-solid fa-stopwatch text-info fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <div class="flex-stat-card">
+                                <div>
+                                    <div class="h4 text-white mb-0 fw-bold">150 kW</div>
+                                    <small class="text-light opacity-75">Potencia DC</small>
+                                </div>
+                                <i class="fa-solid fa-bolt text-warning fs-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ilustración interactiva animada -->
+                <div class="col-lg-6 text-center">
+                    <div class="position-relative d-inline-block">
+                        <div class="p-4 rounded-circle" style="background: rgba(16, 185, 129, 0.1); border: 2px dashed var(--color-mint);">
+                            <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Camión de Carga Eléctrica Energy to Go" 
+                                 class="img-fluid rounded-4 shadow-lg floating-truck-icon"
+                                 style="max-height: 380px; object-fit: cover;"
+                                 onerror="this.src='https://placehold.co/600x400/0f172a/34d399?text=Energy+To+Go+Mobile+Unit'">
+                        </div>
+                        <div class="position-absolute bottom-0 start-0 bg-dark p-3 rounded-3 border border-success shadow text-start mb-3 ms-3" style="max-width: 220px;">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="spinner-grow spinner-grow-sm text-success" role="status"></span>
+                                <strong class="text-white small">Unidad #42 Activa</strong>
+                            </div>
+                            <small class="text-light d-block opacity-75">En camino a Sector Naranjal</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         DEMOSTRACIÓN EXPLÍCITA DE CSS FLOATS (REQUERIMIENTO OBLIGATORIO)
+         ========================================================================== -->
+    <section id="despacho" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Tecnología de Despacho</span>
+                <h2 class="text-dark">Sistemas de Flota Inteligente (CSS Floats Layout)</h2>
+                <p class="text-muted">Demostración técnica de maquetación en varias columnas utilizando flotantes y limpieza de flujo.</p>
+            </div>
+
+            <!-- Contenedor con la clase clearfix requerida -->
+            <div class="floats-demo-container clearfix">
+                <!-- Bloque Flotante a la Izquierda -->
+                <div class="float-box-left">
+                    <img src="https://images.unsplash.com/photo-1558441719-67798286f935?auto=format&fit=crop&w=200&q=80" 
+                         alt="Unidad Van de Carga" 
+                         class="float-img-thumbnail"
+                         onerror="this.src='https://placehold.co/150x150/10b981/ffffff?text=Van+Mobile'">
+                    <h4 class="text-emerald mb-2" style="color: var(--color-emerald-dark);">
+                        <i class="fa-solid fa-truck-ram-box me-2"></i>Unidades Vans de Recarga Ultra-Rápida
+                    </h4>
+                    <p class="small text-secondary mb-0">
+                        Nuestras furgonetas 100% eléctricas están equipadas con baterías de almacenamiento masivo Megapack de 200 kWh. Flotan dinámicamente en sectores estratégicos de la ciudad para garantizar un tiempo de respuesta inferior a 20 minutos.
+                    </p>
+                </div>
+
+                <!-- Bloque Flotante a la Derecha -->
+                <div class="float-box-right">
+                    <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=200&q=80" 
+                         alt="Energía Solar Renovables" 
+                         class="float-img-thumbnail"
+                         onerror="this.src='https://placehold.co/150x150/0d9488/ffffff?text=Solar+Hub'">
+                    <h4 class="text-teal mb-2" style="color: var(--color-teal);">
+                        <i class="fa-solid fa-solar-panel me-2"></i>Hubs Solares de Reabastecimiento
+                    </h4>
+                    <p class="small text-secondary mb-0">
+                        Cada kWh entregado a tu vehículo proviene de nuestras estaciones centrales alimentadas exclusivamente por paneles fotovoltaicos y fuentes eólicas. Garantizamos una huella de carbono totalmente nula en todo el ciclo.
+                    </p>
+                </div>
+            </div>
+            <!-- Fin de la sección de Flotantes con Clearfix -->
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECCIÓN: CÓMO FUNCIONA (Flexbox & Bootstrap Grid)
+         ========================================================================== -->
+    <section id="como-funciona" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <span class="section-tag">Proceso Sencillo</span>
+                <h2>Recargar tu auto nunca fue tan fácil</h2>
+                <p class="text-muted">Como pedir un taxi, pero energía directo a tu conector.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light p-4 h-100 rounded-4">
+                        <div class="step-number">1</div>
+                        <h4 class="h5 mb-3">Solicita la Carga</h4>
+                        <p class="text-muted small">Ingresa tu ubicación, el modelo de tu carro eléctrico y el porcentaje de batería que deseas recargar.</p>
+                        <i class="fa-solid fa-mobile-screen-button text-emerald fs-1 mt-auto text-end" style="color: var(--color-emerald);"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light p-4 h-100 rounded-4">
+                        <div class="step-number">2</div>
+                        <h4 class="h5 mb-3">Unidad en Camino</h4>
+                        <p class="text-muted small">Nuestra van Energy to Go más cercana acepta la orden y se desplaza hacia tu parqueadero o ubicación en la vía.</p>
+                        <i class="fa-solid fa-map-location-dot text-teal fs-1 mt-auto text-end" style="color: var(--color-teal);"></i>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light p-4 h-100 rounded-4">
+                        <div class="step-number">3</div>
+                        <h4 class="h5 mb-3">Conecta y Listo</h4>
+                        <p class="text-muted small">Nuestro técnico certificado realiza la conexión ultra-rápida (DC). En 15-20 minutos recuperas hasta el 80% de autonomía.</p>
+                        <i class="fa-solid fa-charging-station text-cyan fs-1 mt-auto text-end" style="color: var(--color-cyan);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         SIMULADOR INTERACTIVO / CALCULADORA (JavaScript + Flexbox + Modal)
+         ========================================================================== -->
+    <section id="simulador" class="py-5 bg-light">
+        <div class="container">
+            <div class="row align-items-center gy-5">
+                <div class="col-lg-5">
+                    <span class="section-tag">Cotizador Inteligente</span>
+                    <h2 class="mb-3">Simula tu Recarga en Tiempo Real</h2>
+                    <p class="text-muted mb-4">
+                        Selecciona los parámetros de tu vehículo eléctrico para calcular el tiempo estimado de suministro y la tarifa de servicio.
+                    </p>
+
+                    <!-- Quick Tiles con CSS Grid Custom -->
+                    <div class="quick-tiles-grid mb-4">
+                        <div class="p-3 bg-white border rounded-3 text-center">
+                            <i class="fa-solid fa-plug text-success fs-4 mb-1"></i>
+                            <div class="fw-bold small">CCS2 / NACS</div>
+                            <small class="text-muted opacity-75">Conectores</small>
+                        </div>
+                        <div class="p-3 bg-white border rounded-3 text-center">
+                            <i class="fa-solid fa-gauge-high text-info fs-4 mb-1"></i>
+                            <div class="fw-bold small">Carga C10</div>
+                            <small class="text-muted opacity-75">Ultra Rápida</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="calculator-card">
+                        <h3 class="h4 mb-4 text-dark d-flex align-items-center justify-content-between">
+                            <span><i class="fa-solid fa-sliders text-success me-2"></i>Calculadora Energy to Go</span>
+                            <span class="badge bg-emerald text-white rounded-pill fs-6" style="background-color: var(--color-emerald);">En Línea</span>
+                        </h3>
+
+                        <form id="calcForm" onsubmit="event.preventDefault(); triggerServiceModal();">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Capacidad de Batería (kWh)</label>
+                                    <select class="form-select border-2" id="batterySize" onchange="calculateEnergy()">
+                                        <option value="40">40 kWh (Nissan Leaf / Hatchback)</option>
+                                        <option value="60" selected>60 kWh (Tesla Model 3 / Sedan)</option>
+                                        <option value="85">85 kWh (SUV / Volvo / BYD)</option>
+                                        <option value="100">100 kWh (Tesla Model X / Pickups)</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Tipo de Conector</label>
+                                    <select class="form-select border-2">
+                                        <option>CCS Tipo 2 (Estándar)</option>
+                                        <option>NACS / Tesla Native</option>
+                                        <option>Type 1 J1772</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nivel Actual: <span id="currentVal" class="text-danger fw-bold">20%</span></label>
+                                    <input type="range" class="form-range" id="currentBattery" min="5" max="50" value="20" oninput="calculateEnergy()">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Nivel Deseado: <span id="targetVal" class="text-success fw-bold">80%</span></label>
+                                    <input type="range" class="form-range" id="targetBattery" min="55" max="100" value="80" oninput="calculateEnergy()">
+                                </div>
+                            </div>
+
+                            <!-- Panel de Pantalla del Simulador -->
+                            <div class="sim-screen mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="small text-uppercase text-light opacity-75">Estado de Carga Estimado</span>
+                                    <span class="badge bg-success" id="kwhNeeded">36 kWh requeridos</span>
+                                </div>
+
+                                <!-- Barra de Batería -->
+                                <div class="battery-indicator mb-3">
+                                    <div class="battery-fill" id="batteryBar"></div>
+                                </div>
+
+                                <div class="row text-center pt-2 border-top border-secondary">
+                                    <div class="col-4">
+                                        <small class="text-light opacity-75 d-block">Tiempo de Carga</small>
+                                        <strong class="fs-5 text-warning" id="calcTime">18 min</strong>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-light opacity-75 d-block">Llegada Van</small>
+                                        <strong class="fs-5 text-info">12 min</strong>
+                                    </div>
+                                    <div class="col-4">
+                                        <small class="text-light opacity-75 d-block">Costo Estimado</small>
+                                        <strong class="fs-4 text-emerald" id="calcCost" style="color: var(--color-mint);">$14.40</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-renewable w-100 mt-4 py-3 fs-5">
+                                <i class="fa-solid fa-bolt me-2"></i>Solicitar Recarga Inmediata
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         SECCIÓN: PLANES Y TARIFAS (Demostración de CSS Grid)
+         ========================================================================== -->
+    <section id="planes" class="py-5 bg-white">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <span class="section-tag">Tarifas Transparentes</span>
+                <h2>Planes a tu Medida</h2>
+                <p class="text-muted">Paga solo por lo que cargas o suscríbete para beneficios ilimitados.</p>
+            </div>
+
+            <!-- CSS Grid Layout Personalizado -->
+            <div class="plans-grid-container">
+                <!-- Tarjeta 1 -->
+                <div class="grid-card">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h5 mb-0">Carga Express</h3>
+                            <span class="badge bg-light text-dark border">Ocasional</span>
+                        </div>
+                        <div class="display-6 fw-bold mb-3">$0.40 <span class="fs-6 text-muted font-normal">/ kWh</span></div>
+                        <p class="text-muted small mb-4">Ideal para emergencias o cuando estás lejos de casa sin cargadores cerca.</p>
+                        <ul class="list-unstyled small gap-2 d-flex flex-column mb-4">
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Sin mensualidad</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Tarifa de despacho: $4.99</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Carga DC hasta 100 kW</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-dark w-100 rounded-pill" onclick="triggerServiceModal()">Elegir Plan</button>
+                </div>
+
+                <!-- Tarjeta 2 (Destacada) -->
+                <div class="grid-card border-success shadow-sm" style="border-width: 2px;">
+                    <span class="position-absolute top-0 end-0 bg-success text-white px-3 py-1 rounded-bl-4 rounded-tr-4 small fw-bold" style="border-bottom-left-radius: 12px;">MÁS POPULAR</span>
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h5 mb-0 text-emerald" style="color: var(--color-emerald-dark);">Club Energy Plus</h3>
+                            <span class="badge bg-success bg-opacity-10 text-success">Suscripción</span>
+                        </div>
+                        <div class="display-6 fw-bold mb-3">$29.99 <span class="fs-6 text-muted font-normal">/ mes</span></div>
+                        <p class="text-muted small mb-4">Para conductores intensivos de Uber, Didi o viajes diarios frecuentes.</p>
+                        <ul class="list-unstyled small gap-2 d-flex flex-column mb-4">
+                            <li><i class="fa-solid fa-check text-success me-2"></i><strong>Despacho GRATIS</strong> ilimitado</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Tarifa preferencial: $0.32 / kWh</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Reserva programada prioritaria</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Asistencia en ruta 24/7</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-renewable w-100" onclick="triggerServiceModal()">Suscribirse Ahora</button>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="grid-card">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="h5 mb-0">Flotas & Empresas</h3>
+                            <span class="badge bg-dark text-white">Corporativo</span>
+                        </div>
+                        <div class="display-6 fw-bold mb-3">Personalizado</div>
+                        <p class="text-muted small mb-4">Soluciones de recarga móvil para flotillas comerciales de reparto y taxis.</p>
+                        <ul class="list-unstyled small gap-2 d-flex flex-column mb-4">
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Múltiples recargas simultáneas</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>Facturación consolidada</li>
+                            <li><i class="fa-solid fa-check text-success me-2"></i>API e integración telemática</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-dark w-100 rounded-pill" onclick="triggerServiceModal()">Contactar Ventas</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================================================
+         PIE DE PÁGINA / FOOTER (Flexbox + Grid + Semantic Footer)
+         ========================================================================== -->
+    <footer class="bg-dark text-white pt-5 pb-4 border-top border-secondary">
+        <div class="container">
+            <div class="row gy-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="fa-solid fa-bolt-lightning text-warning fs-3"></i>
+                        <span class="fs-4 brand-font">Energy <span style="color: var(--color-mint);">to go</span></span>
+                    </div>
+                    <p class="text-secondary small">
+                        La primera red de electrineras móviles a domicilio impulsadas con energía renovable. Llevamos carga limpia directamente hasta la puerta de tu carro.
+                    </p>
+                    <div class="d-flex gap-3 fs-5 text-secondary">
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="text-secondary"><i class="fa-brands fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="h6 mb-3 text-uppercase text-light">Enlaces</h5>
+                    <ul class="list-unstyled small d-flex flex-column gap-2">
+                        <li><a href="#inicio" class="text-secondary text-decoration-none">Inicio</a></li>
+                        <li><a href="#despacho" class="text-secondary text-decoration-none">Despacho</a></li>
+                        <li><a href="#como-funciona" class="text-secondary text-decoration-none">Cómo Funciona</a></li>
+                        <li><a href="#simulador" class="text-secondary text-decoration-none">Cotizador</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="h6 mb-3 text-uppercase text-light">Cobertura</h5>
+                    <ul class="list-unstyled small d-flex flex-column gap-2 text-secondary">
+                        <li><i class="fa-solid fa-location-dot me-2 text-success"></i>Zona Metropolitana Central</li>
+                        <li><i class="fa-solid fa-location-dot me-2 text-success"></i>Norte y Parques Industriales</li>
+                        <li><i class="fa-solid fa-location-dot me-2 text-success"></i>Corredores de Autopistas</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="h6 mb-3 text-uppercase text-light">Contacto 24/7</h5>
+                    <p class="small text-secondary mb-1"><i class="fa-solid fa-phone me-2 text-info"></i>01-800-ENERGY-GO</p>
+                    <p class="small text-secondary mb-3"><i class="fa-solid fa-envelope me-2 text-info"></i>soporte@energytogo.com</p>
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success">
+                        <i class="fa-solid fa-circle me-1 fs-6"></i> Servicio Activo Ahora
+                    </span>
+                </div>
+            </div>
+
+            <hr class="border-secondary my-4">
+
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center small text-secondary">
+                <p class="mb-0">&copy; 2026 Energy to Go Inc. Todos los derechos reservados.</p>
+                <p class="mb-0 mt-2 mt-sm-0">Desarrollado con HTML5, Bootstrap 5, Flexbox, Grid & CSS Floats.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE SIMULACIÓN DE SERVICIO (Simula confirmación estilo Uber) -->
+    <div class="modal fade" id="requestModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0 bg-dark text-white rounded-top-4">
+                    <h5 class="modal-title d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-truck-fast text-success"></i>
+                        <span>Unidad Energy to Go Solicitada</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="spinner-border text-success my-3" style="width: 3rem; height: 3rem;" role="status">
+                        <span class="visually-hidden">Buscando unidad...</span>
+                    </div>
+                    <h4 class="h5 mb-2">Asignando la van más cercana...</h4>
+                    <p class="text-muted small mb-3">Conectando con la unidad con energía solar disponible en tu cuadrante.</p>
+
+                    <div class="p-3 bg-light rounded-3 text-start small mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Energía a suministrar:</span>
+                            <strong id="modalKwh">36 kWh</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>Tiempo de carga estimado:</span>
+                            <strong id="modalTime">18 min</strong>
+                        </div>
+                        <div class="d-flex justify-content-between border-top pt-1 mt-1">
+                            <span>Total estimado:</span>
+                            <strong class="text-success fs-6" id="modalCost">$14.40</strong>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-renewable w-100" data-bs-dismiss="modal">
+                        Confirmar y Ver Ubicación en Vivo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- LÓGICA INTERACTIVA DEL CALCULADOR Y SIMULADOR -->
+    <script>
+        function calculateEnergy() {
+            const batterySize = parseFloat(document.getElementById('batterySize').value);
+            const currentBattery = parseFloat(document.getElementById('currentBattery').value);
+            const targetBattery = parseFloat(document.getElementById('targetBattery').value);
+
+            // Validación de rangos
+            if (currentBattery >= targetBattery) {
+                document.getElementById('targetBattery').value = currentBattery + 10;
+            }
+
+            document.getElementById('currentVal').innerText = currentBattery + '%';
+            document.getElementById('targetVal').innerText = targetBattery + '%';
+
+            // Cálculo de kWh necesarios
+            const percentageNeeded = (targetBattery - currentBattery) / 100;
+            const kwhNeeded = (batterySize * percentageNeeded).toFixed(1);
+
+            // Cálculos simulados (Potencia Promedio 120kW DC)
+            const timeMinutes = Math.round((kwhNeeded / 120) * 60 + 5);
+            const cost = (kwhNeeded * 0.40).toFixed(2);
+
+            // Actualizar interfaz de usuario
+            document.getElementById('kwhNeeded').innerText = kwhNeeded + ' kWh requeridos';
+            document.getElementById('calcTime').innerText = timeMinutes + ' min';
+            document.getElementById('calcCost').innerText = '$' + cost;
+
+            // Actualizar la barra visual de la batería
+            const batteryBar = document.getElementById('batteryBar');
+            batteryBar.style.width = targetBattery + '%';
+        }
+
+        function triggerServiceModal() {
+            // Actualizar datos del modal
+            const kwh = document.getElementById('kwhNeeded').innerText;
+            const time = document.getElementById('calcTime').innerText;
+            const cost = document.getElementById('calcCost').innerText;
+
+            document.getElementById('modalKwh').innerText = kwh;
+            document.getElementById('modalTime').innerText = time;
+            document.getElementById('modalCost').innerText = cost;
+
+            // Abrir Modal de Bootstrap
+            const modal = new bootstrap.Modal(document.getElementById('requestModal'));
+            modal.show();
+        }
+
+        // Inicializar cálculos al cargar la página
+        window.addEventListener('DOMContentLoaded', () => {
+            calculateEnergy();
+        });
+    </script>
+</body>
+</html>
